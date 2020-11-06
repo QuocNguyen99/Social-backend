@@ -1,0 +1,5 @@
+-tạo 1 file database và 1 file server( nhận các router về) r gọi vào file index.js . File database thì require('./database') k cần const 
+- File server dùng app.set("port", process.env.PORT || 4000)  để tạo port
+-File index.js dùng app.get('port') để gọi port;
+
+-Tham khảo : https://github.com/FaztTech/nodejs-notes-app/blob/master/src/index.js
