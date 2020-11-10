@@ -11,12 +11,12 @@ const route = express.Router();
 
 route.get('/', getListPost);
 
-route.get('/:content', getPostByContent);
+route.get('/content', getPostByContent);
 
 route.post('/', checkAuth, createPost);
 
-route.put('/:id', checkAuth, editPost);
+route.put('/id', checkAuth, editPost);
 
-route.delete('/:id', checkAuth, deletePost);
+route.delete('/id', checkAuth, deletePost);
 
 module.exports = route;
