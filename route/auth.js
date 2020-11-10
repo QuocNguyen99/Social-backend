@@ -1,8 +1,8 @@
 const Joi = require('joi');
 const express = require('express');
-const { createUser } = require('../controller/user');
+const { login } = require('../controller/auth');
 const route = express.Router();
 
-route.post('/', createUser)
+route.post('/', login);
 
 module.exports = route;

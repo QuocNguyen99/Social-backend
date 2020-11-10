@@ -1,25 +1,26 @@
 const express = require('express');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
+const User = require('./route/user');
+const Auth = require('./route/auth');
+const Post = require('./route/post');
 const app = express();
 require('./server');
+require('dotenv').config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/user', User);
+app.use('/auth', Auth);
+app.use('/posts', Post);
 
-const array = [
-    { id: 1, name: 'Nguyên' },
-    { id: 2, name: 'Tú' },
-    { id: 3, name: 'Huy' }
-]
 
 app.get('/', (req, res) => {
     res.send('Hello world');
 })
 
-app.get('/user', (req, res) => {
-    res.send(array);
-})
-
 const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log('Connect with port', port);
+    console.log('Connect with port', process.env.SECRET_KEY);
 })

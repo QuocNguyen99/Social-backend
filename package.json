@@ -19,8 +19,10 @@
   "homepage": "https://github.com/QuocNguyen99/Social-backend#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^17.3.0",
+    "joi-objectid": "^3.0.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.13",
     "nodemon": "^2.0.6"
