@@ -17,5 +17,5 @@ exports.createUser = async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
 
     await user.save();
-    res.send(user);
+    res.send({ ok: true });
 }
