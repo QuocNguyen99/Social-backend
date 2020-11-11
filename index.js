@@ -22,5 +22,4 @@ app.get('/', (req, res) => {
 const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log('Connect with port', port);
-    console.log('Connect with port', process.env.SECRET_KEY);
 })
