@@ -4,7 +4,7 @@ const { User } = require("../models/user");
 
 exports.getListPost = async (req, res) => {
     const posts = await Post.find()
-        .populate('user', ' displayName image')
+        .populate('author', ' displayName image')
         //.populate('comment')
         .sort('createAt');
     res.send(posts);
@@ -15,7 +15,7 @@ exports.getPostByContent = async (req, res) => {
     if (!content) return res.status(400).send('Enter Something');
     const posts = await Post
         .find({ content: /.*content.*/i })
-        .populate('user', 'displayName image')
+        .populate('author', 'displayName image')
         // .populate('comment')
         .sort('createAt');
     res.send(posts);
