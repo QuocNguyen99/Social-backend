@@ -37,7 +37,7 @@ exports.createPost = async (req, res) => {
     })
 
     await post.save();
-    res.send(post)
+    res.send('Success')
 }
 
 exports.editPost = async (req, res) => {
