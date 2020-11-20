@@ -32,7 +32,7 @@ exports.createPost = async (req, res) => {
     if (req.body.image.length > 0) {
         try {
             const file = req.body.image;
-            const uploadRes = cloudinary.uploader.upload(file[0].data, {
+            const uploadRes = cloudinary.uploader.upload(file[0], {
                 upload_preset: 'post_images'
             })
             console.log('Upload', uploadRes);
