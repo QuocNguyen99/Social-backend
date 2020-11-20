@@ -11,7 +11,7 @@ exports.login = async (req, res) => {
         data: {}
     });
 
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email.toLowerCase() });
     if (!user) return res.send({
         error: true, data: {}
     });
