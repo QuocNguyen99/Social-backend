@@ -44,7 +44,7 @@ exports.createPost = async (req, res) => {
 
     let post = new Post({
         content: req.body.content,
-        image: [1, 2, 3],
+        image: ['1', '2'],
         author: req.body.author,
         comment: req.body.comment,
         likeUser: req.body.likeUser
