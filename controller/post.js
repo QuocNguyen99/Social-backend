@@ -29,14 +29,16 @@ exports.createPost = async (req, res) => {
     const user = await User.findById(req.body.author);
     if (!user) return res.status(404).send(`User don't exits`);
 
-    try {
-        const file = req.body.image;
-        const uploadRes = cloudinary.uploader.upload(file[0], {
-            upload_preset: 'post_images'
-        })
-        console.log('Upload', uploadRes);
-    } catch (error) {
-        res.send({ error: true, type: error.message })
+    if (req.body.image.length > 0) {
+        try {
+            const file = req.body.image;
+            const uploadRes = cloudinary.uploader.upload(file[0].data, {
+                upload_preset: 'post_images'
+            })
+            console.log('Upload', uploadRes);
+        } catch (error) {
+            res.send({ error: true, type: error.message })
+        }
     }
 
     let post = new Post({
