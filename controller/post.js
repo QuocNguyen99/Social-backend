@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary').v2;
+const { cloudinary } = require('../utils/cloudinary')
 const { validate, Post, validateEdit } = require("../models/post");
 const Joi = require('joi');
 const { User } = require("../models/user");
@@ -32,9 +32,10 @@ exports.createPost = async (req, res) => {
     if (req.body.image.length > 0) {
         try {
             const file = req.body.image;
-            const uploadRes = cloudinary.uploader.upload(file[0], {
-                upload_preset: 'post_images'
-            })
+            const uploadRes = cloudinary.uploader
+                .upload(file, {
+                    upload_preset: 'post_images'
+                })
             console.log('Upload', uploadRes);
         } catch (error) {
             res.send({ error: true, type: error.message })
