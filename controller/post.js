@@ -33,7 +33,7 @@ exports.createPost = async (req, res) => {
         try {
             const file = req.body.image;
             const uploadRes = cloudinary.uploader
-                .upload(file, {
+                .upload(file[0].uri, {
                     upload_preset: 'post_images'
                 })
             console.log('Upload', uploadRes);
