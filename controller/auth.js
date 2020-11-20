@@ -27,9 +27,11 @@ exports.login = async (req, res) => {
         error: false,
         data: {
             token: token,
-            id: user._id,
-            email: user.email,
-            displayName: user.displayName
+            user: {
+                id: user._id,
+                email: user.email,
+                displayName: user.displayName
+            }
         }
     });
 }
