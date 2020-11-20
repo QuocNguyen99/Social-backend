@@ -7,7 +7,7 @@ exports.createUser = async (req, res) => {
     if (error) return res.send({ error: true })
 
     let user = await User.findOne({ email: email })
-    if (user) return res.send({ error: true })
+    if (user) return res.send({ error: true, type: 'User already exists' })
     user = new User({
         email: email,
         password: req.body.password,
