@@ -2,14 +2,14 @@ const bcrypt = require('bcrypt');
 const { User, validate } = require('../models/user');
 
 exports.createUser = async (req, res) => {
+    const email = req.body.email.toLowerCase()
     const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.send({ error: true })
 
-    let user = await User.findOne({ email: req.body.email })
-    if (user) return res.status(404).send('User already exist');
-
+    let user = await User.findOne({ email: email })
+    if (user) return res.send({ error: true })
     user = new User({
-        email: req.body.email,
+        email: email,
         password: req.body.password,
         displayName: req.body.displayName,
     })
@@ -17,5 +17,5 @@ exports.createUser = async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
 
     await user.save();
-    res.send({ ok: true });
+    res.send({ error: false });
 }
