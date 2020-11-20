@@ -8,8 +8,9 @@ const app = express();
 require('./server');
 require('dotenv').config();
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use('/user', User);
 app.use('/auth', Auth);
 app.use('/posts', Post);
