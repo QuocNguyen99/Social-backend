@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
 
 const portMongo = process.env.MONGO_URL
 const configMongo = {
