@@ -1,3 +1,4 @@
+const cloudinary = require('cloudinary').v2;
 const { validate, Post, validateEdit } = require("../models/post");
 const Joi = require('joi');
 const { User } = require("../models/user");
@@ -27,6 +28,16 @@ exports.createPost = async (req, res) => {
 
     const user = await User.findById(req.body.author);
     if (!user) return res.status(404).send(`User don't exits`);
+
+    try {
+        const file = req.body.image;
+        const uploadRes = cloudinary.uploader.upload(file[0], {
+            upload_preset: 'post_images'
+        })
+        console.log('Upload', uploadRes);
+    } catch (error) {
+        res.send({ error: true, type: error.message })
+    }
 
     let post = new Post({
         content: req.body.content,
