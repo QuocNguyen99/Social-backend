@@ -23,33 +23,44 @@ exports.getPostByContent = async (req, res) => {
 }
 
 exports.createPost = async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    let listImages = []
+    if (req.body.image.length > 0) {
+        try {
+            const { image } = req.body;
+            for (var item of image) {
+                const uploadRes = await cloudinary.uploader
+                    .upload(item, {
+                        upload_preset: 'post_images'
+                    })
+                listImages.push(uploadRes.url)
+            }
+
+        } catch (error) {
+            console.log('Error', error.message);
+            return res.status(409).send('Error');
+        }
+    }
+    let postValidate = {
+        content: req.body.content,
+        image: listImages,
+        author: req.body.author,
+        comment: req.body.comment,
+        likeUser: req.body.likeUser
+    }
+
+    const { error } = validate(postValidate);
+    if (error) return res.status(450).send(error.details[0].message);
 
     const user = await User.findById(req.body.author);
     if (!user) return res.status(404).send(`User don't exits`);
 
-    if (req.body.image.length > 0) {
-        try {
-            const file = req.body.image;
-            const uploadRes = cloudinary.uploader
-                .upload(file[0].uri, {
-                    upload_preset: 'post_images'
-                })
-            console.log('Upload', uploadRes);
-        } catch (error) {
-            res.send({ error: true, type: error.message })
-        }
-    }
-
     let post = new Post({
         content: req.body.content,
-        image: ['1', '2'],
+        image: listImages,
         author: req.body.author,
         comment: req.body.comment,
         likeUser: req.body.likeUser
     })
-
     await post.save();
     res.send('Success')
 }

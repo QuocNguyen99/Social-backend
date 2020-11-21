@@ -30,7 +30,7 @@ const Post = mongoose.model('Post', postScheme);
 
 function validate(post) {
     const scheme = Joi.object({
-        content: Joi.string(),
+        content: Joi.string().allow(''),
         image: Joi.array().items(Joi.string()),
         author: Joi.objectId().required(),
         comment: Joi.array().items(Joi.objectId),
@@ -38,6 +38,7 @@ function validate(post) {
         createAt: Joi.date(),
         modifyAt: Joi.date()
     })
+    console.log('run');
     return scheme.validate(post);
 }
 
