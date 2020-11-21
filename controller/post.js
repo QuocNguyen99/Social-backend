@@ -40,15 +40,14 @@ exports.createPost = async (req, res) => {
             return res.status(409).send('Error');
         }
     }
-    let postValidate = {
+
+    const { error } = validate({
         content: req.body.content,
         image: listImages,
         author: req.body.author,
         comment: req.body.comment,
         likeUser: req.body.likeUser
-    }
-
-    const { error } = validate(postValidate);
+    });
     if (error) return res.status(450).send(error.details[0].message);
 
     const user = await User.findById(req.body.author);
