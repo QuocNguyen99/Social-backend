@@ -4,11 +4,16 @@ const Joi = require('joi');
 const { User } = require("../models/user");
 
 exports.getListPost = async (req, res) => {
+    const page = req.query.page;
     const posts = await Post.find()
         .populate('author', ' displayName image')
         //.populate('comment')
-        .sort('createAt');
-    res.send(posts);
+        .limit(page * 10)
+        .sort({ 'createAt': -1 });
+    res.send({
+        error: false,
+        data: posts
+    });
 }
 
 exports.getPostByContent = async (req, res) => {
@@ -37,7 +42,7 @@ exports.createPost = async (req, res) => {
 
         } catch (error) {
             console.log('Error', error.message);
-            return res.status(409).send('Error');
+            return res.send({ error: true })
         }
     }
 
@@ -46,22 +51,25 @@ exports.createPost = async (req, res) => {
         image: listImages,
         author: req.body.author,
         comment: req.body.comment,
-        likeUser: req.body.likeUser
+        likePost: req.body.likePost
     });
-    if (error) return res.status(450).send(error.details[0].message);
+    if (error) return res.send({ error: true })
 
     const user = await User.findById(req.body.author);
-    if (!user) return res.status(404).send(`User don't exits`);
+    if (!user) return res.send({ error: true })
 
     let post = new Post({
         content: req.body.content,
         image: listImages,
         author: req.body.author,
         comment: req.body.comment,
-        likeUser: req.body.likeUser
+        likePost: req.body.likePost
     })
     await post.save();
-    res.send('Success')
+    res.send({
+        error: false,
+        data: post
+    })
 }
 
 exports.editPost = async (req, res) => {
@@ -71,8 +79,6 @@ exports.editPost = async (req, res) => {
     const post = await Post.findByIdAndUpdate(req.params.id, {
         content: req.body.content,
         image: req.body.image,
-        comment: req.body.comment,
-        likeUser: req.body.likeUser,
         modifyAt: Date.now()
     }, { new: true })
     if (!post) return res.status(404).send('Nothing with id');
@@ -84,4 +90,18 @@ exports.deletePost = async (req, res) => {
     const post = await Post.findByIdAndDelete(req.params.id)
     if (!post) return res.status(404).send('Nothing with id');
     res.send(post);
+}
+
+exports.likePost = async (req, res) => {
+    console.log(req.query);
+    const user = await User.findById(req.body.idUser);
+    console.log('2');
+    if (!user) res.send({ error: true })
+    let post = await Post.findById(req.query.id);
+
+    if (!post) return res.send({ error: true })
+    await post.likePost.push(req.body.idUser);
+    await post.save();
+    console.log('3', post);
+    res.send({ error: false })
 }

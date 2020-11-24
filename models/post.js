@@ -15,7 +15,7 @@ const postScheme = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
     }],
-    likeUser: [{
+    likePost: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     }],
@@ -34,7 +34,7 @@ function validate(post) {
         image: Joi.array().items(Joi.string()),
         author: Joi.objectId().required(),
         comment: Joi.array().items(Joi.objectId),
-        likeUser: Joi.array().items(Joi.objectId),
+        likePost: Joi.array().items(Joi.objectId),
         createAt: Joi.date(),
         modifyAt: Joi.date()
     })
@@ -48,7 +48,7 @@ function validateEdit(post) {
         content: Joi.string(),
         image: Joi.array().items(Joi.string()),
         comment: Joi.array().items(Joi.objectId),
-        likeUser: Joi.array().items(Joi.objectId),
+        likePost: Joi.array().items(Joi.string()),
         createAt: Joi.date(),
         modifyAt: Joi.date()
     })

@@ -5,18 +5,21 @@ const {
     getListPost,
     getPostByContent,
     editPost,
-    deletePost
+    deletePost,
+    likePost
 } = require('../controller/post');
 const route = express.Router();
 
-route.get('/', getListPost);
+route.get('/:page', getListPost);
 
-route.get('/content', getPostByContent);
+route.get('/:content', getPostByContent);
 
 route.post('/', checkAuth, createPost);
 
-route.put('/id', checkAuth, editPost);
+route.put('/:id', checkAuth, editPost);
 
-route.delete('/id', checkAuth, deletePost);
+route.put('/like/:id', checkAuth, likePost);
+
+route.delete('/:id', checkAuth, deletePost);
 
 module.exports = route;

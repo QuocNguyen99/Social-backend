@@ -7,6 +7,6 @@ const configMongo = {
 };
 
 mongoose.connect(portMongo, configMongo)
-    .then(() => console.log('Connect with port', process.env.MONGO_URL))
+    .then(() => console.log('Connect with Mongo'))
     .catch(err => console.log('Fail connect db'))
 
