@@ -93,15 +93,19 @@ exports.deletePost = async (req, res) => {
 }
 
 exports.likePost = async (req, res) => {
-    console.log(req.query);
     const user = await User.findById(req.body.idUser);
-    console.log('2');
     if (!user) res.send({ error: true })
-    let post = await Post.findById(req.query.id);
 
+    let post = await Post.findById(req.query.id);
     if (!post) return res.send({ error: true })
-    await post.likePost.push(req.body.idUser);
+
+    const result = post.likePost.filter(e => e == req.body.idUser);
+    console.log('length', result.length);
+    if (result.length > 0) {
+        await post.likePost.pull(req.body.idUser)
+    } else {
+        await post.likePost.push(req.body.idUser);
+    }
     await post.save();
-    console.log('3', post);
     res.send({ error: false })
 }
