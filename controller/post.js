@@ -100,7 +100,6 @@ exports.likePost = async (req, res) => {
     if (!post) return res.send({ error: true })
 
     const result = post.likePost.filter(e => e == req.body.idUser);
-    console.log('length', result.length);
     if (result.length > 0) {
         await post.likePost.pull(req.body.idUser)
     } else {
