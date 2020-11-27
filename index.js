@@ -15,9 +15,7 @@ require('dotenv').config();
 
 io.on('connection', (socket) => {
     socket.on('CLIENT-SEND-COUNT-LIKE', async (data) => {
-        console.log('id', data);
         const post = await Post.findById(data);
-        console.log(post);
         io.emit('SERVER-SEND-COUNT-LIKE', post.likePost.length)
     })
 })
