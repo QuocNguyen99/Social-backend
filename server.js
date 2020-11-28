@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const portMongo = process.env.MONGO_URL
 const configMongo = {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 };
 
 mongoose.connect(portMongo, configMongo)

@@ -6,13 +6,16 @@ const {
     getPostByContent,
     editPost,
     deletePost,
-    likePost
+    likePost,
+    getPostById
 } = require('../controller/post');
 const route = express.Router();
 
 route.get('/:page', getListPost);
 
 route.get('/:content', getPostByContent);
+
+route.get('/getpostbyid/:id', getPostById);
 
 route.post('/', checkAuth, createPost);
 

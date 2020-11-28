@@ -1,8 +1,6 @@
 const { cloudinary } = require('../utils/cloudinary')
 const { validate, Post, validateEdit } = require("../models/post");
-const Joi = require('joi');
 const { User } = require("../models/user");
-
 exports.getListPost = async (req, res) => {
     const page = req.query.page;
     const posts = await Post.find()
@@ -25,6 +23,18 @@ exports.getPostByContent = async (req, res) => {
         // .populate('comment')
         .sort('createAt');
     res.send(posts);
+}
+
+exports.getPostById = async (req, res) => {
+    const post = await Post
+        .findById(req.query.id)
+        .populate('author', 'displayName image')
+    // .populate('comment')
+    if (!post) return res.status(400).send({ error: true })
+    res.send({
+        error: false,
+        data: post
+    });
 }
 
 exports.createPost = async (req, res) => {
@@ -75,21 +85,40 @@ exports.createPost = async (req, res) => {
 exports.editPost = async (req, res) => {
     const { error } = validateEdit(req.body);
     if (error) return res.status(400).send(error.details[0].message)
+    let listImages = []
+    if (req.body.image.length > 0) {
+        try {
+            const { image } = req.body;
+            for (var item of image) {
+                const uploadRes = await cloudinary.uploader
+                    .upload(item, {
+                        upload_preset: 'post_images'
+                    })
+                listImages.push(uploadRes.url)
+            }
 
-    const post = await Post.findByIdAndUpdate(req.params.id, {
+        } catch (error) {
+            console.log('Error', error.message);
+            return res.send({ error: true })
+        }
+    }
+
+    const post = await Post.findByIdAndUpdate(req.query.id, {
         content: req.body.content,
-        image: req.body.image,
+        image: listImages,
         modifyAt: Date.now()
     }, { new: true })
     if (!post) return res.status(404).send('Nothing with id');
 
-    res.send(post);
+    res.send({ error: false });
 }
 
 exports.deletePost = async (req, res) => {
-    const post = await Post.findByIdAndDelete(req.params.id)
-    if (!post) return res.status(404).send('Nothing with id');
-    res.send(post);
+    if (req.body.author !== req.body.idUser) return res.send(404).send('Do not owner post')
+    await Post.findByIdAndDelete(req.query.id)
+    res.send({
+        error: false
+    });
 }
 
 exports.likePost = async (req, res) => {
