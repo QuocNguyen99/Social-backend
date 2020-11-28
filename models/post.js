@@ -40,7 +40,6 @@ function validate(post) {
         createAt: Joi.date(),
         modifyAt: Joi.date()
     })
-    console.log('run');
     return scheme.validate(post);
 }
 
