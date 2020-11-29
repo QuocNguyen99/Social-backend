@@ -20,8 +20,7 @@ const postScheme = new mongoose.Schema({
         ref: 'User',
     }],
     createAt: {
-        type: Date,
-        default: Date.now()
+        type: Date
     },
     modifyAt: {
         type: Date

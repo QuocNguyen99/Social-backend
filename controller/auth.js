@@ -22,7 +22,6 @@ exports.login = async (req, res) => {
     });
 
     const token = user.generateAuthToken();
-
     res.send({
         error: false,
         data: {

@@ -3,10 +3,12 @@ const { validate, Post, validateEdit } = require("../models/post");
 const { User } = require("../models/user");
 exports.getListPost = async (req, res) => {
     const page = req.query.page;
+    const pageSize = 5;
     const posts = await Post.find()
         .populate('author', ' displayName image')
         //.populate('comment')
-        .limit(page * 10)
+        .skip((page - 1) * pageSize)
+        .limit(pageSize)
         .sort({ 'createAt': -1 });
     res.send({
         error: false,
@@ -61,7 +63,8 @@ exports.createPost = async (req, res) => {
         image: listImages,
         author: req.body.author,
         comment: req.body.comment,
-        likePost: req.body.likePost
+        likePost: req.body.likePost,
+
     });
     if (error) return res.send({ error: true })
 
@@ -73,7 +76,8 @@ exports.createPost = async (req, res) => {
         image: listImages,
         author: req.body.author,
         comment: req.body.comment,
-        likePost: req.body.likePost
+        likePost: req.body.likePost,
+        createAt: Date.now()
     })
     await post.save();
     res.send({
