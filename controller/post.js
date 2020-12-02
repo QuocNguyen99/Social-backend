@@ -57,7 +57,6 @@ exports.createPost = async (req, res) => {
             return res.send({ error: true })
         }
     }
-
     const { error } = validate({
         content: req.body.content,
         image: listImages,
@@ -67,7 +66,6 @@ exports.createPost = async (req, res) => {
 
     });
     if (error) return res.send({ error: true })
-
     const user = await User.findById(req.body.author);
     if (!user) return res.send({ error: true })
 
@@ -127,7 +125,7 @@ exports.deletePost = async (req, res) => {
 
 exports.likePost = async (req, res) => {
     const user = await User.findById(req.body.idUser);
-    if (!user) res.send({ error: true })
+    if (!user) return res.send({ error: true })
 
     let post = await Post.findById(req.query.id);
     if (!post) return res.send({ error: true })

@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const { func } = require('joi');
 const Joi = require('joi');
 
 const { User } = require('../models/user');
@@ -27,7 +26,7 @@ exports.login = async (req, res) => {
         data: {
             token: token,
             user: {
-                id: user._id,
+                _id: user._id,
                 email: user.email,
                 displayName: user.displayName
             }
