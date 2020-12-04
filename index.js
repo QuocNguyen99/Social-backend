@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const User = require('./route/user');
 const Auth = require('./route/auth');
 const Posts = require('./route/post');
+const Comment = require('./route/comment');
 const { Post } = require('./models/post');
 
 require('./server');
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/user', User);
 app.use('/auth', Auth);
 app.use('/posts', Posts);
+app.use('/comment', Comment);
 
 
 app.get('/', (req, res) => {
