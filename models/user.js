@@ -34,7 +34,8 @@ userScheme.methods.generateAuthToken = function () {
     const token = jwt.sign({
         _id: this._id,
         email: this.email,
-        displayName: this.displayName
+        displayName: this.displayName,
+        image: this.image
     },
         process.env.SECRET_KEY)
     return token;

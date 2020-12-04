@@ -6,7 +6,6 @@ exports.getListPost = async (req, res) => {
     const pageSize = 5;
     const posts = await Post.find()
         .populate('author', ' displayName image')
-        //.populate('comment')
         .skip((page - 1) * pageSize)
         .limit(pageSize)
         .sort({ 'createAt': -1 });
@@ -22,7 +21,6 @@ exports.getPostByContent = async (req, res) => {
     const posts = await Post
         .find({ content: /.*content.*/i })
         .populate('author', 'displayName image')
-        // .populate('comment')
         .sort('createAt');
     res.send(posts);
 }
@@ -31,7 +29,6 @@ exports.getPostById = async (req, res) => {
     const post = await Post
         .findById(req.query.id)
         .populate('author', 'displayName image')
-    // .populate('comment')
     if (!post) return res.status(400).send({ error: true })
     res.send({
         error: false,
@@ -61,7 +58,6 @@ exports.createPost = async (req, res) => {
         content: req.body.content,
         image: listImages,
         author: req.body.author,
-        comment: req.body.comment,
         likePost: req.body.likePost,
 
     });
@@ -73,7 +69,6 @@ exports.createPost = async (req, res) => {
         content: req.body.content,
         image: listImages,
         author: req.body.author,
-        comment: req.body.comment,
         likePost: req.body.likePost,
         createAt: Date.now()
     })
