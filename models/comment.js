@@ -11,6 +11,10 @@ const commentScheme = new mongoose.Schema({
         ref: 'Post',
         required: true
     },
+    idComment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    },
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -31,6 +35,7 @@ function validate(cmt) {
         imageCmt: Joi.array().items(Joi.string()),
         author: Joi.objectId().required(),
         idPost: Joi.objectId().required(),
+        idComment: Joi.objectId(),
         createAt: Joi.date(),
         modifyAt: Joi.date()
     })

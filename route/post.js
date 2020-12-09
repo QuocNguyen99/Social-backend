@@ -13,7 +13,7 @@ const route = express.Router();
 
 route.get('/:page', getListPost);
 
-route.get('/:content', getPostByContent);
+route.get('/search/:content', getPostByContent);
 
 route.get('/getpostbyid/:id', getPostById);
 

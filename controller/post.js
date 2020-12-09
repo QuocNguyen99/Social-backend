@@ -2,27 +2,44 @@ const { cloudinary } = require('../utils/cloudinary')
 const { validate, Post, validateEdit } = require("../models/post");
 const { User } = require("../models/user");
 exports.getListPost = async (req, res) => {
-    const page = req.query.page;
-    const pageSize = 5;
-    const posts = await Post.find()
-        .populate('author', ' displayName image')
-        .skip((page - 1) * pageSize)
-        .limit(pageSize)
-        .sort({ 'createAt': -1 });
-    res.send({
-        error: false,
-        data: posts
-    });
+    try {
+        const page = req.query.page;
+        const pageSize = 5;
+        await Post.find()
+            .populate('author', ' displayName image')
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .sort({ 'createAt': -1 })
+            .then((posts) => {
+                res.send({
+                    error: false,
+                    data: posts
+                });
+            })
+            .catch((err) => { res.status(500).send({ err: true, message: err.message }) })
+    } catch (err) {
+        res.status(500).send({ err: true, message: err.message })
+    }
 }
 
 exports.getPostByContent = async (req, res) => {
-    const content = req.params.content.trim();
+    const content = req.query.content.trim();
+
     if (!content) return res.status(400).send('Enter Something');
     const posts = await Post
-        .find({ content: /.*content.*/i })
+        .find({ content: { $regex: new RegExp(content.toLowerCase(), "i") } })
         .populate('author', 'displayName image')
         .sort('createAt');
-    res.send(posts);
+    const users = await User
+        .find({ displayName: { $regex: new RegExp(content.toLowerCase(), "i") } })
+    console.log(users);
+    res.send({
+        error: false,
+        data: {
+            posts: posts,
+            users: users
+        }
+    });
 }
 
 exports.getPostById = async (req, res) => {
