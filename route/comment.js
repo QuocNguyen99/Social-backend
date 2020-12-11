@@ -4,13 +4,16 @@ const {
     getListComment,
     createComment,
     createCommentReply,
-    getListReply
+    getListReply,
+    getReplyLength
 } = require('../controller/comment');
 const route = express.Router();
 
 route.get('/:id', getListComment);
 
 route.get('/reply/:id', getListReply);
+
+route.get('/replylength/:id', getReplyLength);
 
 route.post('/:id', checkAuth, createComment);
 

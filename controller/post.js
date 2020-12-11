@@ -24,15 +24,15 @@ exports.getListPost = async (req, res) => {
 
 exports.getPostByContent = async (req, res) => {
     const content = req.query.content.trim();
-
     if (!content) return res.status(400).send('Enter Something');
     const posts = await Post
         .find({ content: { $regex: new RegExp(content.toLowerCase(), "i") } })
         .populate('author', 'displayName image')
-        .sort('createAt');
+        .sort({ 'createAt': -1 });
+
     const users = await User
         .find({ displayName: { $regex: new RegExp(content.toLowerCase(), "i") } })
-    console.log(users);
+
     res.send({
         error: false,
         data: {

@@ -22,6 +22,22 @@ exports.getListReply = async (req, res) => {
     })
 }
 
+exports.getReplyLength = async (req, res) => {
+    const count = await Comment.countDocuments({ idComment: req.query.idCmt })
+
+    const comments = await Comment.find({ idComment: req.query.idCmt })
+        .populate('author', ' displayName image')
+        .sort({ 'createAt': - 1 })
+
+    res.send({
+        error: false,
+        data: {
+            latestComments: comments[0],
+            count: count
+        }
+    })
+}
+
 exports.createComment = async (req, res) => {
     const post = await Post.findById(req.query.id);
     if (!post) return res.status(404).send({ error: true });

@@ -19,3 +19,17 @@ exports.createUser = async (req, res) => {
     await user.save();
     res.send({ error: false });
 }
+
+// exports.getUserByName = async (req, res) => {
+//     const name = req.query.name.trim();
+//     if (!name) return res.status(400).send('Enter Something');
+
+//     const users = await User
+//         .find({ displayName: { $regex: new RegExp(name.toLowerCase(), "i") } })
+//     res.send({
+//         error: false,
+//         data: {
+//             users: users
+//         }
+//     });
+// }
