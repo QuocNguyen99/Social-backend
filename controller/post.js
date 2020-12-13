@@ -1,8 +1,10 @@
 const { cloudinary } = require('../utils/cloudinary')
 const { validate, Post, validateEdit } = require("../models/post");
 const { User } = require("../models/user");
+
 exports.getListPost = async (req, res) => {
     try {
+        // console.log('123123');
         const page = req.query.page;
         const pageSize = 5;
         await Post.find()
@@ -12,7 +14,7 @@ exports.getListPost = async (req, res) => {
             .sort({ 'createAt': -1 })
             .then((posts) => {
                 res.send({
-                    error: false,
+                    error: 'false',
                     data: posts
                 });
             })
@@ -50,6 +52,21 @@ exports.getPostById = async (req, res) => {
     res.send({
         error: false,
         data: post
+    });
+}
+
+exports.getlistPostByIdUser = async (req, res) => {
+    console.log(req.query.idUser);
+    const posts = await Post
+        .find({ author: req.query.idUser })
+        .populate('author', 'displayName image')
+        .sort({ 'createAt': -1 })
+        .exec()
+    if (!posts) return res.status(400).send({ error: true })
+    console.log(posts.length);
+    res.send({
+        error: false,
+        data: posts
     });
 }
 

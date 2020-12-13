@@ -7,13 +7,16 @@ const {
     editPost,
     deletePost,
     likePost,
-    getPostById
+    getPostById,
+    getlistPostByIdUser,
 } = require('../controller/post');
 const route = express.Router();
 
 route.get('/:page', getListPost);
 
 route.get('/search/:content', getPostByContent);
+
+route.get('/list/:id', getlistPostByIdUser);
 
 route.get('/getpostbyid/:id', getPostById);
 
