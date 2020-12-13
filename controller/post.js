@@ -56,14 +56,12 @@ exports.getPostById = async (req, res) => {
 }
 
 exports.getlistPostByIdUser = async (req, res) => {
-    console.log(req.query.idUser);
     const posts = await Post
         .find({ author: req.query.idUser })
         .populate('author', 'displayName image')
         .sort({ 'createAt': -1 })
         .exec()
     if (!posts) return res.status(400).send({ error: true })
-    console.log(posts.length);
     res.send({
         error: false,
         data: posts

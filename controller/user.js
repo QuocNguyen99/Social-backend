@@ -20,6 +20,16 @@ exports.createUser = async (req, res) => {
     res.send({ error: false });
 }
 
+exports.getUser = async (req, res) => {
+    const user = await User
+        .findById(req.query.idUser)
+    if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
+    res.send({
+        error: false,
+        data: user
+    })
+}
+
 // exports.getUserByName = async (req, res) => {
 //     const name = req.query.name.trim();
 //     if (!name) return res.status(400).send('Enter Something');
