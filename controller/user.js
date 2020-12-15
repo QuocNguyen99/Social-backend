@@ -24,9 +24,20 @@ exports.getUser = async (req, res) => {
     const user = await User
         .findById(req.query.idUser)
     if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
+    const userReturn = {
+        birthDay: user.birthDay,
+        image: user.image,
+        imageCover: user.imageCover,
+        bio: user.bio,
+        studyAt: user.studyAt,
+        workAt: user.workAt,
+        _id: user._id,
+        email: user.email,
+        displayName: user.displayName
+    }
     res.send({
         error: false,
-        data: user
+        data: userReturn
     })
 }
 

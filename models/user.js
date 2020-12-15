@@ -21,12 +21,28 @@ const userScheme = new mongoose.Schema({
         required: true
     },
     birthDay: {
-        type: Date,
+        type: String,
+        default: ""
+    },
+    bio: {
+        type: String,
+        default: ""
+    },
+    workAt: {
+        type: String,
+        default: ""
+    },
+    studyAt: {
+        type: String,
         default: ""
     },
     image: {
         type: String,
-        default: ""
+        default: "https://res.cloudinary.com/dp2rat4ch/image/upload/v1608031982/avataDefault_obmgcb.gif"
+    },
+    imageCover: {
+        type: String,
+        default: "https://res.cloudinary.com/dp2rat4ch/image/upload/v1608033503/imagecover_fd4dcs.png"
     }
 })
 
@@ -35,7 +51,8 @@ userScheme.methods.generateAuthToken = function () {
         _id: this._id,
         email: this.email,
         displayName: this.displayName,
-        image: this.image
+        image: this.image,
+        imageCover: this.imageCover
     },
         process.env.SECRET_KEY)
     return token;
@@ -48,8 +65,12 @@ function validate(user) {
         email: Joi.string().required().min(5).email(),
         password: Joi.string().required().min(5).max(50),
         displayName: Joi.string().required().min(1).max(50),
-        birthDay: Joi.date(),
-        image: Joi.string()
+        birthDay: Joi.string(),
+        bio: Joi.string(),
+        workAt: Joi.string(),
+        studyAt: Joi.string(),
+        image: Joi.string(),
+        imageCover: Joi.string()
     })
     return scheme.validate(user);
 }
