@@ -41,16 +41,12 @@ exports.getUser = async (req, res) => {
     })
 }
 
-// exports.getUserByName = async (req, res) => {
-//     const name = req.query.name.trim();
-//     if (!name) return res.status(400).send('Enter Something');
-
-//     const users = await User
-//         .find({ displayName: { $regex: new RegExp(name.toLowerCase(), "i") } })
-//     res.send({
-//         error: false,
-//         data: {
-//             users: users
-//         }
-//     });
-// }
+exports.changeInforUser = async (req, res) => {
+    const user = User.findById(req.query.idUser);
+    if (!user) return res.status(404).send({ error: true, message: 'User not exits' })
+    const userUpdate = req.body.userUpdate;
+    await User.findByIdAndUpdate(req.query.idUser, { $set: userUpdate })
+    res.send({
+        error: false
+    })
+}
