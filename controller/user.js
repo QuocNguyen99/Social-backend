@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { cloudinary } = require('../utils/cloudinary')
 const { User, validate } = require('../models/user');
 
 exports.createUser = async (req, res) => {
@@ -49,4 +50,40 @@ exports.changeInforUser = async (req, res) => {
     res.send({
         error: false
     })
+}
+
+exports.changeAvataUser = async (req, res) => {
+    let user = User.findById(req.query.idUser);
+    if (!user) return res.status(404).send({ error: true, message: 'User not exits' })
+    let avataUpdate = req.body.avataUpdate;
+    let avataCurrent = req.body.avataCurrent;
+    try {
+
+        if (!avataUpdate) {
+            await User.findByIdAndUpdate({ _id: req.query.idUser }, { $set: { image: avataCurrent } })
+            console.log('1');
+            // user.image = avataCurrent;
+            // await user.save();
+
+            res.send({
+                error: false
+            })
+        } else {
+            const uploadRes = await cloudinary.uploader
+                .upload(avataUpdate, {
+                    upload_preset: 'post_images'
+                })
+            await User.findByIdAndUpdate({ _id: req.query.idUser }, { $set: { image: uploadRes.url } })
+            // user.image = uploadRes.url
+            // await user.save()
+            console.log('2');
+            res.send({
+                error: false
+            })
+        }
+
+    } catch (error) {
+        console.log('Error', error.message);
+        return res.send({ error: true })
+    }
 }
