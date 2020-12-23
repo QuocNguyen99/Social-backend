@@ -4,7 +4,8 @@ const {
     createUser,
     getUser,
     changeInforUser,
-    changeAvataUser
+    changeAvataUser,
+    changeImageCoverUser
 } = require('../controller/user');
 const checkAuth = require('../utils/checkAuth');
 const route = express.Router();
@@ -16,6 +17,8 @@ route.post('/', createUser);
 route.put('/:id', checkAuth, changeInforUser);
 
 route.put('/updateAvata/:id', checkAuth, changeAvataUser);
+
+route.post('/updateImageCover/:id', checkAuth, changeImageCoverUser);
 
 
 module.exports = route;

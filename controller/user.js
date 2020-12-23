@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { cloudinary } = require('../utils/cloudinary')
 const { User, validate } = require('../models/user');
+const { Mongoose, Types } = require('mongoose');
 
 exports.createUser = async (req, res) => {
     const email = req.body.email.toLowerCase()
@@ -22,24 +23,44 @@ exports.createUser = async (req, res) => {
 }
 
 exports.getUser = async (req, res) => {
-    const user = await User
-        .findById(req.query.idUser)
-    if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
-    const userReturn = {
-        birthDay: user.birthDay,
-        image: user.image,
-        imageCover: user.imageCover,
-        bio: user.bio,
-        studyAt: user.studyAt,
-        workAt: user.workAt,
-        _id: user._id,
-        email: user.email,
-        displayName: user.displayName
+    try {
+        const user = await User
+            .findById(req.query.idUser)
+        if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
+        const userReturn = {
+            birthDay: user.birthDay,
+            image: user.image,
+            imageCover: user.imageCover,
+            bio: user.bio,
+            studyAt: user.studyAt,
+            workAt: user.workAt,
+            _id: user._id,
+            email: user.email,
+            displayName: user.displayName
+        }
+        res.send({
+            error: false,
+            data: userReturn
+        })
+
+    } catch (error) {
+        console.log(error.message);
     }
-    res.send({
-        error: false,
-        data: userReturn
-    })
+
+}
+
+exports.getPasswordUser = async (req, res) => {
+    try {
+        const user = await User
+            .findById(req.query.idUser)
+        if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
+        res.send({
+            error: false,
+            data: '123'
+        })
+    } catch (error) {
+        console.log('getpassword', error.message);
+    }
 }
 
 exports.changeInforUser = async (req, res) => {
@@ -77,6 +98,35 @@ exports.changeAvataUser = async (req, res) => {
             // user.image = uploadRes.url
             // await user.save()
             console.log('2');
+            res.send({
+                error: false
+            })
+        }
+
+    } catch (error) {
+        console.log('Error', error.message);
+        return res.send({ error: true })
+    }
+}
+
+exports.changeImageCoverUser = async (req, res) => {
+    let user = User.findById(req.query.idUser);
+    if (!user) return res.status(404).send({ error: true, message: 'User not exits' })
+    let imageCoverUpdate = req.body.imageCoverUpdate;
+    let imageCoverCurrent = req.body.imageCoverCurrent;
+    try {
+
+        if (!imageCoverUpdate) {
+            await User.findByIdAndUpdate(req.query.idUser, { imageCover: imageCoverCurrent }, { new: true })
+            res.send({
+                error: false
+            })
+        } else {
+            let infoImg = await cloudinary.uploader
+                .upload(imageCoverUpdate, {
+                    upload_preset: 'post_images'
+                })
+            await User.updateOne({ _id: req.query.idUser }, { imageCover: infoImg.url })
             res.send({
                 error: false
             })
