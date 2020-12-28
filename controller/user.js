@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const { cloudinary } = require('../utils/cloudinary')
 const { User, validate } = require('../models/user');
-const { Mongoose, Types } = require('mongoose');
+const mongoose = require('mongoose');
+var ObjectId = require('mongodb').ObjectId;
 
 exports.createUser = async (req, res) => {
     const email = req.body.email.toLowerCase()
@@ -24,9 +25,11 @@ exports.createUser = async (req, res) => {
 
 exports.getUser = async (req, res) => {
     try {
+        console.log(mongoose.Types.ObjectId(req.query.idUser));
         const user = await User
             .findById(req.query.idUser)
         if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
+        console.log('12321');
         const userReturn = {
             birthDay: user.birthDay,
             image: user.image,
@@ -38,6 +41,7 @@ exports.getUser = async (req, res) => {
             email: user.email,
             displayName: user.displayName
         }
+        console.log('info');
         res.send({
             error: false,
             data: userReturn
@@ -48,19 +52,27 @@ exports.getUser = async (req, res) => {
     }
 
 }
+const comparePassword = async (passClient, passData) => {
+    const result = await bcrypt.compare(passClient, passData);
+    console.log('RESULT', result);
+    return result;
+}
 
-exports.getPasswordUser = async (req, res) => {
-    try {
-        const user = await User
-            .findById(req.query.idUser)
-        if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
-        res.send({
-            error: false,
-            data: '123'
-        })
-    } catch (error) {
-        console.log('getpassword', error.message);
-    }
+exports.changePassword = async (req, res) => {
+    const user = await User
+        .findById(req.query.idUser)
+    if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
+
+    const result = await comparePassword(req.body.oldPass, user.password);
+    if (!result) return res.send({ error: true, message: 'Old password is wrong' })
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(req.body.newPass, salt);
+    await user.save();
+    console.log('1');
+    res.send({
+        error: false
+    })
 }
 
 exports.changeInforUser = async (req, res) => {
