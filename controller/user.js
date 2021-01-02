@@ -54,7 +54,6 @@ exports.getUser = async (req, res) => {
 }
 const comparePassword = async (passClient, passData) => {
     const result = await bcrypt.compare(passClient, passData);
-    console.log('RESULT', result);
     return result;
 }
 
@@ -69,7 +68,6 @@ exports.changePassword = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.newPass, salt);
     await user.save();
-    console.log('1');
     res.send({
         error: false
     })
