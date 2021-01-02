@@ -3,12 +3,12 @@ const { validateMessage, Message } = require("../models/message");
 
 exports.getListConversationByIdUser = async (req, res) => {
     try {
-        const listConversation = Conversation
+        const listConversation = await Conversation
             .find({ members: { $in: req.body.idUser } })
             .populate('lastMessage', 'sender content')
             .populate('members', 'displayName image')
             .sort({ 'createAt': - 1 })
-            .then(res => { })
+        console.log("Data", listConversation);
         res.send({
             error: false,
             data: listConversation
