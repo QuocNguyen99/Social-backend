@@ -42,12 +42,11 @@ function validate(post) {
     return scheme.validate(post);
 }
 
-
 function validateEdit(post) {
     const scheme = Joi.object({
         content: Joi.string(),
         image: Joi.array().items(Joi.string()),
-        comment: Joi.array().items(Joi.objectId),
+        comment: Joi.array().items(Joi.objectId()),
         likePost: Joi.array().items(Joi.string()),
         createAt: Joi.date(),
         modifyAt: Joi.date()
