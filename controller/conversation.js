@@ -4,11 +4,13 @@ const { validateMessage, Message } = require("../models/message");
 exports.getListConversationByIdUser = async (req, res) => {
     try {
         const listConversation = await Conversation
-            .find({ members: { $in: req.body.idUser } })
-            .populate('lastMessage', 'sender content')
+            .find({ members: { $in: req.query.idUser } })
+            .populate({
+                path: 'lastMessage',
+                populate: [{ path: "sender" }]
+            })
             .populate('members', 'displayName image')
             .sort({ 'createAt': - 1 })
-        console.log("Data", listConversation);
         res.send({
             error: false,
             data: listConversation

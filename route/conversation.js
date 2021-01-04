@@ -8,6 +8,6 @@ const route = express.Router();
 
 route.get('/', getListConversationByIdUser);
 
-route.post('/createConversation/', createConversation);
+route.post('/createConversation/', checkAuth, createConversation);
 
 module.exports = route;

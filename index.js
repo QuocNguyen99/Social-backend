@@ -10,6 +10,7 @@ const Auth = require('./route/auth');
 const Posts = require('./route/post');
 const Comments = require('./route/comment');
 const Conversations = require('./route/conversation');
+const Messages = require('./route/message');
 const { Post } = require('./models/post');
 const { Comment } = require('./models/comment');
 
@@ -34,6 +35,7 @@ app.use('/auth', Auth);
 app.use('/posts', Posts);
 app.use('/comment', Comments);
 app.use('/conversation', Conversations);
+app.use('/message', Messages);
 
 
 app.get('/', (req, res) => {

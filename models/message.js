@@ -31,12 +31,12 @@ const Message = mongoose.model("Message", schemeMessage);
 
 function validate(message) {
     const scheme = Joi.object({
-        sender: Joi.objectId().require(),
+        sender: Joi.objectId().required(),
         content: Joi.string(),
         conversation: Joi.objectId(),
         listImage: Joi.array().items(Joi.string()),
         listSeen: Joi.array().items(Joi.objectId()),
-        createAt: Joi.date().require()
+        createAt: Joi.date()
     })
     return scheme.validate(message);
 }

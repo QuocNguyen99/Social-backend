@@ -41,7 +41,6 @@ exports.getReplyLength = async (req, res) => {
 exports.createComment = async (req, res) => {
     const post = await Post.findById(req.query.id);
     if (!post) return res.status(404).send({ error: true });
-
     const { error } = validate(req.body.comment);
     if (error) return res.status(400).send(error.details[0].message)
     const commentTemp = req.body.comment;
