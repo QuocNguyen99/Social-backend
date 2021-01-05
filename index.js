@@ -26,6 +26,14 @@ io.on('connection', (socket) => {
         const comments = await Comment.find({ idPost: data });
         io.emit('SERVER-SEND-COUNT-COMMENT', { id: data, count: comments.length })
     })
+    socket.on('CLIENT-SEND-ROOM', async (idConversation) => {
+        console.log('IDCONVERSATION', idConversation);
+        socket.join(idConversation);
+    })
+    socket.on('CLIENT-SEND-MESSAGE', async ({ idConversation, message }) => {
+        console.log('idConversation', idConversation);
+        io.to(idConversation).emit('SERVER-SEND-MESSAGE', message)
+    })
 })
 
 app.use(express.json({ limit: '50mb' }));
