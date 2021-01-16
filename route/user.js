@@ -6,12 +6,15 @@ const {
     changeInforUser,
     changeAvataUser,
     changeImageCoverUser,
-    changePassword
+    changePassword,
+    getImageUser
 } = require('../controller/user');
 const checkAuth = require('../utils/checkAuth');
 const route = express.Router();
 
 route.get('/', getUser)
+
+route.get('/getListImageByUser', getImageUser)
 
 route.post('/', createUser);
 

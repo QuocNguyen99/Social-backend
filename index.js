@@ -13,6 +13,7 @@ const Conversations = require('./route/conversation');
 const Messages = require('./route/message');
 const { Post } = require('./models/post');
 const { Comment } = require('./models/comment');
+const { sendMessage } = require('./controller/message');
 
 require('./server');
 require('dotenv').config();
@@ -27,12 +28,15 @@ io.on('connection', (socket) => {
         io.emit('SERVER-SEND-COUNT-COMMENT', { id: data, count: comments.length })
     })
     socket.on('CLIENT-SEND-ROOM', async (idConversation) => {
-        console.log('IDCONVERSATION', idConversation);
         socket.join(idConversation);
     })
     socket.on('CLIENT-SEND-MESSAGE', async ({ idConversation, message }) => {
-        console.log('idConversation', idConversation);
-        io.to(idConversation).emit('SERVER-SEND-MESSAGE', message)
+        const messageForController = {
+            sender: message[0].user._id,
+            content: message[0].text
+        }
+        const messageAfter = await sendMessage(idConversation, messageForController);
+        io.to(idConversation).emit('SERVER-SEND-MESSAGE', messageAfter)
     })
 })
 

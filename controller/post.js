@@ -4,7 +4,6 @@ const { User } = require("../models/user");
 
 exports.getListPost = async (req, res) => {
     try {
-        // console.log('123123');
         const page = req.query.page;
         const pageSize = 5;
         await Post.find()
@@ -77,7 +76,7 @@ exports.createPost = async (req, res) => {
                 const uploadRes = await cloudinary.uploader
                     .upload(item, {
                         upload_preset: 'post_images'
-                    })
+                    }).catch(err => console.log('image err' + err))
                 listImages.push(uploadRes.url)
             }
 
@@ -110,6 +109,7 @@ exports.createPost = async (req, res) => {
         data: post
     })
 }
+
 
 exports.editPost = async (req, res) => {
     const { error } = validateEdit(req.body);
@@ -166,3 +166,4 @@ exports.likePost = async (req, res) => {
     await post.save();
     res.send({ error: false })
 }
+

@@ -3,6 +3,7 @@ const { cloudinary } = require('../utils/cloudinary')
 const { User, validate } = require('../models/user');
 const mongoose = require('mongoose');
 var ObjectId = require('mongodb').ObjectId;
+const { Post } = require('../models/post');
 
 exports.createUser = async (req, res) => {
     const email = req.body.email.toLowerCase()
@@ -25,11 +26,9 @@ exports.createUser = async (req, res) => {
 
 exports.getUser = async (req, res) => {
     try {
-        console.log(mongoose.Types.ObjectId(req.query.idUser));
         const user = await User
             .findById(req.query.idUser)
         if (!user) return res.status(404).send({ error: true, message: 'Not found User' })
-        console.log('12321');
         const userReturn = {
             birthDay: user.birthDay,
             image: user.image,
@@ -41,7 +40,6 @@ exports.getUser = async (req, res) => {
             email: user.email,
             displayName: user.displayName
         }
-        console.log('info');
         res.send({
             error: false,
             data: userReturn
@@ -92,10 +90,6 @@ exports.changeAvataUser = async (req, res) => {
 
         if (!avataUpdate) {
             await User.findByIdAndUpdate({ _id: req.query.idUser }, { $set: { image: avataCurrent } })
-            console.log('1');
-            // user.image = avataCurrent;
-            // await user.save();
-
             res.send({
                 error: false
             })
@@ -105,16 +99,13 @@ exports.changeAvataUser = async (req, res) => {
                     upload_preset: 'post_images'
                 })
             await User.findByIdAndUpdate({ _id: req.query.idUser }, { $set: { image: uploadRes.url } })
-            // user.image = uploadRes.url
-            // await user.save()
-            console.log('2');
             res.send({
                 error: false
             })
         }
 
     } catch (error) {
-        console.log('Error', error.message);
+        console.log('Error Profile', error.message);
         return res.send({ error: true })
     }
 }
@@ -132,6 +123,7 @@ exports.changeImageCoverUser = async (req, res) => {
                 error: false
             })
         } else {
+
             let infoImg = await cloudinary.uploader
                 .upload(imageCoverUpdate, {
                     upload_preset: 'post_images'
@@ -146,4 +138,14 @@ exports.changeImageCoverUser = async (req, res) => {
         console.log('Error', error.message);
         return res.send({ error: true })
     }
+}
+
+exports.getImageUser = async (req, res) => {
+    const listPost = await Post.find({ 'author': req.query.idUser });
+    const listImageInPost = [];
+    listPost.map(e => listImageInPost.push(...e.image));
+    res.send({
+        error: false,
+        data: listImageInPost
+    })
 }

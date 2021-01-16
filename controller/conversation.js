@@ -5,15 +5,16 @@ exports.getListConversationByIdUser = async (req, res) => {
     try {
         const listConversation = await Conversation
             .find({ members: { $in: req.query.idUser } })
+            .populate('members', 'displayName image')
             .populate({
                 path: 'lastMessage',
                 populate: [{ path: "sender" }]
             })
-            .populate('members', 'displayName image')
-            .sort({ 'createAt': - 1 })
+            .sort({ 'updatedAt': -1 })
+        const listConversationAfterCheck = listConversation.filter(e => e.lastMessage !== undefined)
         res.send({
             error: false,
-            data: listConversation
+            data: listConversationAfterCheck
         })
     } catch (error) {
         console.log("Get list conversation", error.message);
@@ -22,32 +23,33 @@ exports.getListConversationByIdUser = async (req, res) => {
 
 exports.createConversation = async (req, res) => {
     const tempConversation = req.body.conversation;
-    const tempMessage = req.body.message;
     const { error } = validate(tempConversation);
-    if (error) return res.send({ error: true, message: 'invalid conversation' })
+    if (error) return res.send({ error: true, message: 'Invalid conversation' })
+
+    const result = await Conversation
+        .findOne({ members: { $all: tempConversation.members } })
+        .populate('members', 'displayName image')
+    if (result) return res.send({
+        error: false,
+        data: result
+    })
+
     let conversation = new Conversation({
         nameConversation: "",
         isGroup: false,
         members: tempConversation.members,
+        // lastMessage: '',
         logo: "",
         imageInCoversation: [],
         createAt: Date.now(),
     })
 
-    const conversationAfterCreate = await conversation.save()
-
-    const message = new Message({
-        sender: tempMessage.sender,
-        content: tempMessage.content,
-        listImage: [],
-        listSeen: [],
-        createAt: Date.now()
-    })
-
-    const messageAfterUpdate = await message.save()
-    await Conversation.findByIdAndUpdate(conversationAfterCreate._id, { lastMessage: messageAfterUpdate._id });
-    await Message.findByIdAndUpdate(messageAfterUpdate._id, { conversation: conversationAfterCreate._id })
+    const conversationAfter = await conversation.save()
+    const result2 = await Conversation
+        .findById(conversationAfter._id)
+        .populate('members', 'displayName image')
     res.send({
         error: false,
+        data: result2
     })
 }
