@@ -53,3 +53,22 @@ exports.createConversation = async (req, res) => {
         data: result2
     })
 }
+
+// exports.getProfileConversation = async (req, res) => {
+//     const idConversation = req.query.idConversation;
+//     const conversation=await Conversation.findById(idConversation);
+//     const dataReturn={
+//         avata:
+//     }
+
+// }
+
+exports.deleteConversation = async (req, res) => {
+    const idConversation = req.query.idConversation;
+    await Conversation.findByIdAndRemove(idConversation)
+
+    res.send({
+        error: false
+    })
+
+}
